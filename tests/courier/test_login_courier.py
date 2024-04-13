@@ -1,26 +1,19 @@
-import pytest
-from helpers import register_new_courier_and_return_login_password, delete_courier
+from conftest import courier
 import requests
 import allure
-
+from data import BASE_URL, COURIER_REGISTER_URL, LOGIN_URL, GET_COURIER_BY_ID_URL, DELETE_COURIER_URL
 
 class TestLoginCourier:
 
-    @pytest.fixture
-    def courier(self):
-        login, password, first_name = register_new_courier_and_return_login_password()
-        yield login, password
-        delete_courier(login)  # Убедитесь, что вы удаляете курьера
+
 
     @allure.title("Successful log in")
     def test_courier_login_success(self, courier):
-        login, password = courier
-
+        login, password, _ = courier
         response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/courier/login",
+            LOGIN_URL,
             json={"login": login, "password": password},
         )
-
         assert response.status_code == 200
         assert response.json()["id"] is not None
 
@@ -28,14 +21,14 @@ class TestLoginCourier:
     @allure.title("Log in not all required fields are filled")
     def test_courier_login_required_fields(self):
         response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/courier/login",
+            LOGIN_URL,
             json={"password": "12345"},
         )
         assert response.status_code == 400
         assert response.json() == {'code': 400, 'message': 'Недостаточно данных для входа'}
 
         response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/courier/login",
+            LOGIN_URL,
             json={"login": "test_login"},
         )
         assert response.status_code == 400
@@ -43,17 +36,17 @@ class TestLoginCourier:
 
     @allure.title("Log in fails with invalid credentials")
     def test_login_fails_with_invalid_credentials(self, courier):
-        login, password = courier
+        login, password, _ = courier
 
         response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/courier/login",
+            LOGIN_URL,
             json={"login": "nonexistent_login", "password": password},
         )
         assert response.status_code == 404
         assert response.json()["message"] == "Учетная запись не найдена"
 
         response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/courier/login",
+            LOGIN_URL,
             json={"login": login, "password": "wrong_password"},
         )
         assert response.status_code == 404

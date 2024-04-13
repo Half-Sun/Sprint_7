@@ -2,13 +2,10 @@ import pytest
 from requests import Response
 import requests
 import allure
-from data import TEST_DATA
+from data import CREATE_ORDER_URL, TEST_DATA
 
 
 class TestCreateOrder:
-    @pytest.fixture(scope='function')
-    def order(self):
-        yield TEST_DATA
 
     @allure.title("Order created with parametrize")
     @pytest.mark.parametrize(
@@ -17,7 +14,6 @@ class TestCreateOrder:
     )
     def test_create_order(
             self,
-            order,
             first_name,
             last_name,
             address,
@@ -29,7 +25,7 @@ class TestCreateOrder:
             color,
     ):
         response: Response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/orders",
+            CREATE_ORDER_URL,  # Using the imported URL
             json={
                 "firstName": first_name,
                 "lastName": last_name,
@@ -49,7 +45,7 @@ class TestCreateOrder:
     @allure.title("Order created with one color")
     def test_create_order_with_one_color(self):
         response: Response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/orders",
+            CREATE_ORDER_URL,
             json={
                 "firstName": "Иван",
                 "lastName": "Иванов",
@@ -69,7 +65,7 @@ class TestCreateOrder:
     @allure.title("Order created with two colors")
     def test_create_order_with_two_colors(self):
         response: Response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/orders",
+            CREATE_ORDER_URL,
             json={
                 "firstName": "Иван",
                 "lastName": "Иванов",
@@ -89,7 +85,7 @@ class TestCreateOrder:
     @allure.title("Order created without color")
     def test_create_order_without_color(self):
         response: Response = requests.post(
-            "https://qa-scooter.praktikum-services.ru/api/v1/orders",
+            CREATE_ORDER_URL,
             json={
                 "firstName": "Иван",
                 "lastName": "Иванов",

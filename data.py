@@ -23,3 +23,14 @@ TEST_DATA = [
         [],
     ),
 ]
+
+BASE_URL = "https://qa-scooter.praktikum-services.ru/api/v1"
+
+COURIER_REGISTER_URL = f"{BASE_URL}/courier"
+LOGIN_URL = f"{BASE_URL}/courier/login"
+GET_COURIERS_URL = f"{BASE_URL}/couriers"
+GET_COURIER_BY_ID_URL = f"{BASE_URL}/courier/{{}}"
+DELETE_COURIER_URL = f"{BASE_URL}/courier/{{}}"
+CREATE_ORDER_URL = f"{BASE_URL}/orders"
+GET_ORDER_BY_TRACK_URL = f"{BASE_URL}/orders/track"
+GET_ORDERS_URL = f"{BASE_URL}/orders"
